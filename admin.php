@@ -112,7 +112,7 @@
                     <?php foreach ($todoList as $index => $task) : ?>
                         <tr>
                             <td><?php taskNumber()?></td>
-                            <td><?php echo $task['task']; ?></td>
+                            <td><?php echo $task['name']; ?></td>
                             <td><?php echo $task['room_type']; ?></td>
                             <td><?php echo $task['due_date']; ?></td>
                             <td><?php echo $task['set_time']; ?></td>
