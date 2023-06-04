@@ -3,7 +3,7 @@
 // Check if admin login button is clicked
 if (isset($_POST['admin_login'])){
     if (!empty($_POST['passcode'])){
-        $passcode = "lexiscode123";
+        $passcode = "mqwW!8V#O452";
         if ($_POST['passcode'] === $passcode){
             // Redirect to the admin page
             header("Location: admin.php");
