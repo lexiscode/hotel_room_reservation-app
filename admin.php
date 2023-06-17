@@ -72,7 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 
-
 ?>
 
 
@@ -189,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
                     <?php foreach ($all_data as $index => $data): ?>
                     <tr>
-                        <td><?= $index; ?></td> 
+                        <td>RUM<?= $index + 1; ?></td> 
                         <td><?= htmlspecialchars($data["customer_name"]) ?></td> 
                         <td><?= htmlspecialchars($data["room_type"]) ?></td>
                         <td><?= htmlspecialchars($data["booking_date"]) ?></td>
