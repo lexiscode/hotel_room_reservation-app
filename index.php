@@ -4,6 +4,7 @@ require "login_verify.php";
 require "alerts.php";
 require "includes/auth.php";
 require "includes/db_connect.php";
+require "includes/validate_form.php";
 
 // Initialize the session.
 session_start();
@@ -58,6 +59,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             }
         }
     }
+ 
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // Check if the submit button has been clicked, and check if the fields ain't empty also
     if (isset($_POST['sign-in'])){
@@ -79,16 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             }
         }
     }
-
-
-
-
-
-
-
- 
 }
-
 
 ?>
 
@@ -136,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     <!-- GRID 1 -->
                     <div class="col">
                         <div align="center">
-                            <button type="submit" class="btn btn-primary" name="reserve_now" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <button type="submit" class="btn btn-primary" name="reserve_now" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
                             Reserve Now!
                             </button>
                         </div>
@@ -156,11 +152,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         <p>You are logged in. See <a href="admin.php">Database</a> or <a href="logout.php">Logout</a></p>
 
                     <?php else: ?>
-                        <p>Are you an admin? If yes, please kindly click
-                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        <i>Admin Login</i></p>
-                    </button>
-                    to login in.
+                        <p>Are you an admin? If yes, please kindly click<i><a href="http://localhost/hotel_room_reservation-app/login.php">Admin Login</a></i>to login in.</p>
                     <?php endif; ?>
 
                 </i>
@@ -179,11 +171,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
             <div class="modal-body">
 
-                <?php if (!empty($error)): ?>
-                <p>* <i><?= $error ?></i></p>
-                <?php endif; ?>
-
                 <div class="w-50 m-auto">
+                    <?php if (!empty($error)): ?>
+                    <p>* <i><?= $error ?></i></p>
+                    <?php endif; ?>
                     <label for="username" style="color: white">Username:</label>
                     <input class="form-control" type="text" name="username" id="username" placeholder="Enter Your Username" required>
                     <br>
