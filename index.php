@@ -1,6 +1,97 @@
-<?php require "app_db.php";?>
-<?php require "login_verify.php";?>
-<?php require "alerts.php";?>
+<?php 
+
+require "login_verify.php";
+require "alerts.php";
+require "includes/auth.php";
+require "includes/db_connect.php";
+
+// Initialize the session.
+session_start();
+
+// connect to the database server
+$conn = connectDB();
+
+// Defining the variables in the global
+$customer_name = '';
+$room_type = '';
+$booking_date = '';
+$booking_time = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+
+    if (isset($_POST['reserve_now'])){
+        if (!empty($_POST['customer_name']) && !empty($_POST['room_type']) && !empty($_POST['booking_date']) && !empty($_POST['booking_time'])){
+
+            // getting fields contents, then checking for possible empty fields
+            $customer_name = $_POST['customer_name'];
+            $room_type = $_POST['room_type'];
+            $booking_date = $_POST['booking_date'];
+            $booking_time = $_POST['booking_time'];
+
+            // checking for empty fields, and throwing error if empty 
+            $errors = validateArticle($customer_name, $room_type, $booking_date, $booking_time);
+
+            // the ADD functionality should go through if no errors (non-empty fields) are encountered
+            if (empty($errors)){
+                
+                // connect to the database server
+                $conn = connectDB();
+
+                // inserts the data into the database server
+                $sql = "INSERT INTO rooms_record (customer_name, room_type, booking_date, booking_time)
+                        VALUES (?, ?, ?, ?)";
+
+                // Prepares an SQL statement for execution
+                $stmt = mysqli_prepare($conn, $sql);
+
+                // Bind variables for the parameter markers in the SQL statement prepared
+                mysqli_stmt_bind_param($stmt, "ssss", $customer_name, $room_type, $booking_date, $booking_time);
+
+                // Executes a prepared statement
+                $results = mysqli_stmt_execute($stmt);
+
+                // it is more advisable to use absolute paths below than relative path
+                header("Location: http://localhost/hotel_room_reservation-app/index.php"); 
+                exit;
+                    
+
+            }
+        }
+    }
+
+    // Check if the submit button has been clicked, and check if the fields ain't empty also
+    if (isset($_POST['sign-in'])){
+        if (!empty($_POST['username']) && !empty($_POST['password'])){
+            if ($_POST['username'] == 'lexis' && $_POST['password'] == 'secret123'){
+
+                // this helps prevent session fixation attacks
+                session_regenerate_id(true);
+
+                $_SESSION['is_logged_in'] = true;
+                
+                // redirect to the index page
+                header('Location: admin.php');
+                exit;
+
+            } else {
+
+                $error = "login details incorrect";
+            }
+        }
+    }
+
+
+
+
+
+
+
+ 
+}
+
+
+?>
+
 
 <!doctype html>
 <html lang="en">
@@ -18,8 +109,8 @@
 
         <form action="" method="POST">
             <div class="w-50 m-auto">
-                <label for="task" style="color: white">Name:</label>
-                <input class="form-control" type="text" name="name" id="name" placeholder="Enter Your Full Name">
+                <label for="name" style="color: white">Name:</label>
+                <input class="form-control" type="text" name="customer_name" id="name" placeholder="Enter Your Full Name">
                 <br>
                 <label for="room_type" style="color: white">Room Type:</label> <br>
                 <select class="form-control" name="room_type" id="room_type">
@@ -32,10 +123,10 @@
                 </select>
                 <br>
                 <label for="due_date" style="color: white">Date:</label>
-                <input class="form-control" type="date" name="due_date" id="due_date">
+                <input class="form-control" type="date" name="booking_date" id="due_date">
                 <br>
                 <label for="set_time" style="color: white">Set Time:</label>
-                <input class="form_control" type="time" name="set_time" id="set_time" placeholder='hh:mm'>
+                <input class="form_control" type="time" name="booking_time" id="set_time" placeholder='hh:mm'>
 
             </div>
             <br> 
@@ -45,7 +136,7 @@
                     <!-- GRID 1 -->
                     <div class="col">
                         <div align="center">
-                            <button type="submit" class="btn btn-primary" name="addTask" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <button type="submit" class="btn btn-primary" name="reserve_now" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             Reserve Now!
                             </button>
                         </div>
@@ -59,11 +150,19 @@
         <div align="center">
             <p style="color: white">
                 <i>
-                    Are you an admin? If yes, please kindly click
+                    <!-- Working with Sessions-->
+            
+                    <?php if (isLoggedIn()): ?>
+                        <p>You are logged in. See <a href="admin.php">Database</a> or <a href="logout.php">Logout</a></p>
+
+                    <?php else: ?>
+                        <p>Are you an admin? If yes, please kindly click
                     <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        <i>Admin Login</i>
+                        <i>Admin Login</i></p>
                     </button>
                     to login in.
+                    <?php endif; ?>
+
                 </i>
             </p>
             <p style="color: #B2BEB5">Copyright &copy; 2023 | Designed by Lexiscode</p>
@@ -80,7 +179,15 @@
             </div>
             <div class="modal-body">
 
+                <?php if (!empty($error)): ?>
+                <p>* <i><?= $error ?></i></p>
+                <?php endif; ?>
+
                 <div class="w-50 m-auto">
+                    <label for="username" style="color: white">Username:</label>
+                    <input class="form-control" type="text" name="username" id="username" placeholder="Enter Your Username" required>
+                    <br>
+
                     <label for="passcode" style="color: white">Passcode:</label>
                     <input class="form-control" type="password" name="passcode" id="passcode" placeholder="Enter Your Password" required>
                     <br>
@@ -97,7 +204,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" name="admin_login">Login</button>
+                <button type="submit" class="btn btn-primary" name="sign-in">Login</button>
             </div>
             </div>
             </form>
@@ -106,6 +213,8 @@
 
 
         </form>
+
+        
 
 
     </div>
