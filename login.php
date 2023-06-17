@@ -1,12 +1,30 @@
 <?php
 
-// Initialize the session.
-session_start();
+/*
+// Check if admin login button is clicked
+if (isset($_POST['admin_login'])){
+    if (!empty($_POST['passcode'])){
+        $passcode = "mqwW!8V#O452";
+        if ($_POST['passcode'] === $passcode){
+            // Redirect to the admin page
+            header("Location: admin.php");
+            exit; // Make sure to call exit after the redirect
+        }else{
+            // Redirect to back to the homepage
+            header("Location: index.php");
+            exit; // Make sure to call exit after the redirect
+        }
+    }
+}
+*/
+
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     // Check if the submit button has been clicked, and check if the fields ain't empty also
     if (isset($_POST['sign-in'])){
+
         if (!empty($_POST['username']) && !empty($_POST['password'])){
             if ($_POST['username'] == 'lexiscode' && $_POST['password'] == 'secret123'){
 
@@ -16,49 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 $_SESSION['is_logged_in'] = true;
                 
                 // redirect to the index page
-                header('Location: admin.php');
+                header('Location: http://localhost/hotel_room_reservation/admin.php');
                 exit;
 
-            } else {
-
-                $error = "login details incorrect";
-            }
+            } 
         }
     }
 }
 
 ?>
-
-<?php require "includes/header.php"; ?>
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Reservation</title>
-</head>
-<body>
-    
-    <h1 align="center"><a href="http://localhost/hotel_room_reservation-app/index.php" style="text-decoration: none">-- HOTEL BOOKING RESERVATION --</a></h1>
-
-    <h2>Login</h2>
-
-    <?php if (!empty($error)): ?>
-        <p>* <i><?= $error ?></i></p>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username">
-        <br> <br>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password">
-        <br> <br>
-
-        <button type="submit" name="sign-in">Sign in</button>
-    </form>
-
-
-</body>
-</html>
-

@@ -1,10 +1,9 @@
 <?php 
 
-require "login_verify.php";
+require "login.php";
 require "alerts.php";
 require "includes/auth.php";
 require "includes/db_connect.php";
-require "includes/validate_form.php";
 
 // Initialize the session.
 session_start();
@@ -152,7 +151,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                         <p>You are logged in. See <a href="admin.php">Database</a> or <a href="logout.php">Logout</a></p>
 
                     <?php else: ?>
-                        <p>Are you an admin? If yes, please kindly click<i><a href="http://localhost/hotel_room_reservation-app/login.php">Admin Login</a></i>to login in.</p>
+                        <p>Are you an admin? If yes, please kindly click <i><a href="http://localhost/hotel_room_reservation-app/login.php">Admin Login</a></i> to login in.</p>
+
+                        Are you an admin? If yes, please kindly click
+                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <i>Admin Login</i>
+                        </button>
+                        to login in.
                     <?php endif; ?>
 
                 </i>
@@ -172,15 +177,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             <div class="modal-body">
 
                 <div class="w-50 m-auto">
-                    <?php if (!empty($error)): ?>
-                    <p>* <i><?= $error ?></i></p>
-                    <?php endif; ?>
                     <label for="username" style="color: white">Username:</label>
                     <input class="form-control" type="text" name="username" id="username" placeholder="Enter Your Username" required>
                     <br>
 
                     <label for="passcode" style="color: white">Passcode:</label>
-                    <input class="form-control" type="password" name="passcode" id="passcode" placeholder="Enter Your Password" required>
+                    <input class="form-control" type="password" name="password" id="passcode" placeholder="Enter Your Password" required>
                     <br>
                     <div class="form-group">
                         <div class="form-check">
