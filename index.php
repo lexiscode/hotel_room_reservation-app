@@ -1,6 +1,5 @@
 <?php 
 
-require "login.php";
 require "alerts.php";
 require "includes/auth.php";
 require "includes/db_connect.php";
@@ -62,29 +61,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
-    // Check if the submit button has been clicked, and check if the fields ain't empty also
-    if (isset($_POST['sign-in'])){
-        if (!empty($_POST['username']) && !empty($_POST['password'])){
-            if ($_POST['username'] == 'lexiscode' && $_POST['password'] == 'secret123'){
+// Check if the submit button has been clicked, and check if the fields ain't empty also
+if (isset($_POST['sign-in'])){
+    if (!empty($_POST['username']) && !empty($_POST['password'])){
+        if ($_POST['username'] == 'lexiscode' && $_POST['password'] == 'secret123'){
 
-                // this helps prevent session fixation attacks
-                session_regenerate_id(true);
+            // this helps prevent session fixation attacks
+            session_regenerate_id(true);
 
-                $_SESSION['is_logged_in'] = true;
-                
-                // redirect to the index page
-                header('Location: http://localhost/hotel_room_reservation-app/admin.php');
-                exit;
+            $_SESSION['is_logged_in'] = true;
+            
+            // redirect to the index page
+            header('Location: http://localhost/hotel_room_reservation-app/admin.php');
+            exit;
 
-            } else {
+        } else {
 
-                $error = "login details incorrect";
-            }
+            $error = "login details incorrect";
         }
     }
 }
+
+
 
 ?>
 
@@ -181,8 +180,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     <input class="form-control" type="text" name="username" id="username" placeholder="Enter Your Username" required>
                     <br>
 
-                    <label for="passcode" style="color: white">Passcode:</label>
-                    <input class="form-control" type="password" name="password" id="passcode" placeholder="Enter Your Password" required>
+                    <label for="password" style="color: white">Password:</label>
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Enter Your Password" required>
                     <br>
                     <div class="form-group">
                         <div class="form-check">

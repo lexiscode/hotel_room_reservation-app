@@ -1,4 +1,4 @@
-<?
+<?php
 
 require "includes/auth.php";
 require "includes/db_connect.php";
@@ -19,14 +19,14 @@ $conn = connectDB();
 // READING FROM THE DATABASE AND CHECKING FOR ERRORS
 $sql = "SELECT * 
         FROM rooms_record 
-        ORDER BY booking_date DESC;";
+        ORDER BY booking_date, booking_time DESC;";
 
 $results = mysqli_query($conn, $sql); 
 
 $all_data = mysqli_fetch_all($results, MYSQLI_ASSOC);
 // print_r($all_data);  prints an associative array
 
-/*
+
 // Defining the variables in the global
 $customer_name = '';
 $room_type = '';
@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
  
 }
 
-*/
+
 
 ?>
 
