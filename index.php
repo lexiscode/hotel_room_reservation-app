@@ -1,6 +1,6 @@
 <?php 
 
-require "alerts.php";
+require "includes/alerts.php";
 require "includes/auth.php";
 require "includes/db_connect.php";
 
