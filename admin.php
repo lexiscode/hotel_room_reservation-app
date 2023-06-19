@@ -1,71 +1,59 @@
 <?php
 
-require "includes/auth.php";
-require "includes/db_connect.php";
+require "classes/Auth.php";
+require "classes/DbConnect.php";
+require "classes/GetAll.php";
+require "classes/GetDataId.php";
 
 // Initialize the session.
 session_start();
 
-// NB: This below will no longer be necessary if you won't be displaying the new article link page for non-login users
-if (!isLoggedIn()){
-    
-    die("Unauthorized. You must be logged in first." . PHP_EOL . "<a href='index.php'>Back To Homepage</a>");
-}
+// in this case of the admin page, you must be login to access this page
+Auth::requireLogin();
 
-
-// connect to the database server
-$conn = connectDB();
+// Connect to the Database Server
+$conn = new DbConnect();
+$conn->getConn();
 
 // READING FROM THE DATABASE AND CHECKING FOR ERRORS
-$sql = "SELECT * 
-        FROM rooms_record 
-        ORDER BY booking_date, booking_time DESC;";
+$all_data = GetAll::getAll($conn);
 
-$results = mysqli_query($conn, $sql); 
-
-$all_data = mysqli_fetch_all($results, MYSQLI_ASSOC);
-// print_r($all_data);  prints an associative array
-
-
-// Defining the variables in the global
+// defining variables
 $customer_name = '';
 $room_type = '';
-$booking_date = '';
 $booking_time = '';
+$booking_date = '';
+
+$customer_data = new GetDataId();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if (isset($_POST['reserve_now'])){
         if (!empty($_POST['customer_name']) && !empty($_POST['room_type']) && !empty($_POST['booking_date']) && !empty($_POST['booking_time'])){
 
+            // gets connection to database
+            $conn = new DbConnect();
+            $conn->getConn();
+
             // getting fields contents, then checking for possible empty fields
-            $customer_name = $_POST['customer_name'];
-            $room_type = $_POST['room_type'];
-            $booking_date = $_POST['booking_date'];
-            $booking_time = $_POST['booking_time'];
+            $customer_data->customer_name = $_POST['customer_name'];
+            $customer_data->room_type = $_POST['room_type'];
+            $customer_data->booking_date = $_POST['booking_date'];
+            $customer_data->booking_time = $_POST['booking_time'];
 
+            // INSERT into the database
+            $results = $customer_data->newData($conn);
 
-            // the ADD functionality should go through if no errors (non-empty fields) are encountered 
-            // connect to the database server
-            $conn = connectDB();
-
-            // inserts the data into the database server
-            $sql = "INSERT INTO rooms_record (customer_name, room_type, booking_date, booking_time)
-                    VALUES (?, ?, ?, ?)";
-
-            // Prepares an SQL statement for execution
-            $stmt = mysqli_prepare($conn, $sql);
-
-            // Bind variables for the parameter markers in the SQL statement prepared
-            mysqli_stmt_bind_param($stmt, "ssss", $customer_name, $room_type, $booking_date, $booking_time);
-
-            // Executes a prepared statement
-            $results = mysqli_stmt_execute($stmt);
-
-            // it is more advisable to use absolute paths below than relative path
-            header("Location: http://localhost/hotel_room_reservation-app/admin.php"); 
-            exit;
-            
+            // checking for errors, if none, then redirect the user to the new article page
+            if ($results){
+                
+                // it is more advisable to use absolute paths below than relative path
+                header("Location: http://localhost/hotel_room_reservation-app/admin.php"); 
+                exit;
+            }
+        
+        }else{
+            $error = "No fields must be left empty.";
         }
     }
  
