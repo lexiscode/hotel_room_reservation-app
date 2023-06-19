@@ -71,6 +71,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
  
 }
 
+// Check if the "Clear All" button was clicked
+if(isset($_POST['clear_all'])) {
+    
+    // SQL query to delete all data from the table
+    // $sql = DELETE FROM rooms_record
+    $sql = "TRUNCATE TABLE rooms_record";
+
+    // Execute the SQL query
+    mysqli_query($conn, $sql);
+
+    header("Location: http://localhost/hotel_room_reservation-app/admin.php");
+    exit;
+}
 
 ?>
 
@@ -150,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <div class="col" align="left">
                     
                     <form action="" method="POST">
-                        <button type="submit" class="btn btn-secondary" name="clearLists">Clear Lists</button>
+                        <button type="submit" class="btn btn-secondary" name="clear_all">Clear Lists</button>
                     </form>
                 
                 </div>

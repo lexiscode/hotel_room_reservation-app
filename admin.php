@@ -31,10 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     if (isset($_POST['reserve_now'])){
         if (!empty($_POST['customer_name']) && !empty($_POST['room_type']) && !empty($_POST['booking_date']) && !empty($_POST['booking_time'])){
 
-            // gets connection to database
-            $conn = new DbConnect();
-            $conn->getConn();
-
             // getting fields contents, then checking for possible empty fields
             $customer_data->customer_name = $_POST['customer_name'];
             $customer_data->room_type = $_POST['room_type'];
@@ -58,6 +54,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     }
  
 }
+
+
+// Check if the "Clear All" button was clicked
+if(isset($_POST['clear_all'])) {
+    
+    // SQL query to delete all data from the table
+    // $sql = DELETE FROM rooms_record
+    $sql = "TRUNCATE TABLE rooms_record";
+
+    // Execute SQL query
+    $conn->query($sql);
+
+    header("Location: http://localhost/hotel_room_reservation-app/admin.php");
+    exit;
+}
+
+
+
 
 
 ?>
@@ -138,7 +152,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 <div class="col" align="left">
                     
                     <form action="" method="POST">
-                        <button type="submit" class="btn btn-secondary" name="clearLists">Clear Lists</button>
+                        <button type="submit" class="btn btn-secondary" name="clear_all">Clear Lists</button>
                     </form>
                 
                 </div>
