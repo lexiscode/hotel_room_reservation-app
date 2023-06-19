@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     if (isset($_POST['sign-in'])){
 
         if (!empty($_POST['username']) && !empty($_POST['password'])){
-            if ($_POST['username'] == 'lexiscode' && $_POST['password'] == 'secret123'){
+            if (User::authenticate($conn, $_POST['username'], $_POST['password'])){
 
                 Auth::login();
                 
